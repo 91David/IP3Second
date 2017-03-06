@@ -5,6 +5,7 @@
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Entity
 public class User extends Connector {
@@ -35,6 +36,32 @@ public class User extends Connector {
         this.id = id;
     }
     */
+
+    /**
+     * Hashes passwords using jBCrypt.
+     * (Note: Do not modify gensalt beyond 30.)
+     *
+     * @param password The user's password.
+     * @return The hashed password.
+     */
+    public static String hashPassword(String password) {
+        String salt = BCrypt.gensalt();
+        return BCrypt.hashpw(password, salt);
+    }
+
+    /**
+     * Check that an unencrypted password matches one that has previously been hashed.
+     * (It should NOT reveal the password, only verify whether the hashed matches the plain.)
+     *
+     * @param password       The user's password.
+     * @param hashedPassword The hashed password.
+     * @return Boolean verifying whether password matches.
+     */
+    public static Boolean verifyPassword(String password, String hashedPassword) {
+        System.out.println(BCrypt.checkpw(password, hashedPassword));
+        return BCrypt.checkpw(password, hashedPassword);
+    }
+
 
     public String getPassword() {
         return password;
